@@ -1,47 +1,37 @@
-# OpenNext Starter
+# ILa
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+A product catalog website for ILa, a small online shop in Laos that sells goods sourced from China.
 
-## Getting Started
+Customers browse products by category on the website and place orders through WhatsApp or Facebook Messenger. The owner manages products through an admin area (planned).
 
-Read the documentation at https://opennext.js.org/cloudflare.
+**Live site:** https://ila.vilaxathphommahaxay.workers.dev
 
-## Develop
+## Why this project
 
-Run the Next.js development server:
+Posts on a Facebook page get buried under newer posts. This site keeps every product in one organized place, so customers can find what they want easily.
+
+## Tech stack
+
+- Next.js (App Router) + TypeScript
+- Tailwind CSS
+- Supabase (PostgreSQL, Auth, Storage) - planned
+- Cloudflare Workers via OpenNext - hosting, auto-deploys from GitHub
+
+## Status
+
+Work in progress.
+
+- [x] Project setup and automatic deployment
+- [ ] Database
+- [ ] Storefront
+- [ ] Admin area
+- [ ] SEO and launch
+
+## Run locally
 
 ```bash
+npm install
 npm run dev
-# or similar package manager command
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-## Preview
-
-Preview the application locally on the Cloudflare runtime:
-
-```bash
-npm run preview
-# or similar package manager command
-```
-
-## Deploy
-
-Deploy the application to Cloudflare:
-
-```bash
-npm run deploy
-# or similar package manager command
-```
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Then open http://localhost:3000.
