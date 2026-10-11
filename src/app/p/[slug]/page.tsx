@@ -2,6 +2,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { supabase } from "../../../lib/supabase";
 import { formatLak } from "../../../lib/format";
+import { productImageUrl } from "../../../lib/storage";
+
+export const dynamic = "force-dynamic";
 
 const STOCK_LABEL: Record<string, string> = {
   in_stock: "ມີສິນຄ້າ",
@@ -30,6 +33,12 @@ export default async function ProductPage({
     notFound();
   }
 
+  const { data: images } = await supabase
+    .from("product_images")
+    .select("id, storage_path, alt_text")
+    .eq("product_id", product.id)
+    .order("sort_order");
+
   const { data: variants } = await supabase
     .from("product_variants")
     .select("id, color, size, stock_status")
@@ -51,6 +60,19 @@ export default async function ProductPage({
       <Link href="/" className="text-sm text-neutral-500">
         ← ກັບໜ້າຫຼັກ
       </Link>
+
+      {images && images.length > 0 && (
+        <div className="mt-4 flex flex-col gap-3">
+          {images.map((image) => (
+            <img
+              key={image.id}
+              src={productImageUrl(image.storage_path)}
+              alt={image.alt_text || product.name}
+              className="w-full rounded-lg"
+            />
+          ))}
+        </div>
+      )}
 
       <h1 className="mt-4 text-3xl font-bold">{product.name}</h1>
 

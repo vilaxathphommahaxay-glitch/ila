@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { supabase } from "../../../lib/supabase";
-import { formatLak } from "../../../lib/format";
+import ProductCard from "../../../components/ProductCard";
+
+export const dynamic = "force-dynamic";
 
 export default async function CategoryPage({
   params,
@@ -26,10 +28,12 @@ export default async function CategoryPage({
 
   const { data: products, error } = await supabase
     .from("products")
-    .select("id, name, slug, price_lak")
+    .select("id, name, slug, price_lak, product_images(storage_path, sort_order)")
     .eq("category_id", category.id)
     .eq("status", "active")
-    .order("id", { ascending: false });
+    .order("id", { ascending: false })
+    .order("sort_order", { referencedTable: "product_images" })
+    .limit(1, { referencedTable: "product_images" });
 
   if (error) {
     return <main className="p-6">เกิดข้อผิดพลาด: {error.message}</main>;
@@ -49,13 +53,12 @@ export default async function CategoryPage({
         <ul className="grid grid-cols-2 gap-4">
           {products.map((product) => (
             <li key={product.id}>
-              <Link
-                href={`/p/${product.slug}`}
-                className="block rounded-lg border p-4"
-              >
-                <p className="font-medium">{product.name}</p>
-                <p className="text-neutral-500">{formatLak(product.price_lak)}</p>
-              </Link>
+              <ProductCard
+                slug={product.slug}
+                name={product.name}
+                priceLak={product.price_lak}
+                coverPath={product.product_images[0]?.storage_path}
+              />
             </li>
           ))}
         </ul>
