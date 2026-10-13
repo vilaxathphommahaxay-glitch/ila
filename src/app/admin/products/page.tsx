@@ -1,24 +1,19 @@
 import Link from "next/link";
 import { requireAdmin } from "../../../lib/admin";
 import { formatLak } from "../../../lib/format";
+import {
+  PRODUCT_STATUS_LABEL,
+  PRODUCT_STATUSES,
+  type ProductStatus,
+} from "../../../lib/product-form";
 import { productImageUrl } from "../../../lib/storage";
-
-const STATUSES = ["draft", "active", "hidden", "archived"] as const;
-type Status = (typeof STATUSES)[number];
-
-const STATUS_LABEL: Record<Status, string> = {
-  draft: "ແບບຮ່າງ",
-  active: "ເປີດຂາຍ",
-  hidden: "ເຊື່ອງ",
-  archived: "ປິດການຂາຍ",
-};
 
 type ProductRow = {
   id: number;
   sku: string;
   name: string;
   price_lak: number;
-  status: Status;
+  status: ProductStatus;
   category_id: number | null;
   product_images: { storage_path: string; sort_order: number }[];
 };
@@ -34,7 +29,7 @@ export default async function AdminProductsPage({
 
   // รับเฉพาะสถานะที่รู้จัก ค่าอื่นทั้งหมด (รวมค่าซ้ำ/แปลกๆ) ถือเป็น "ทั้งหมด"
   const { status: statusParam } = await searchParams;
-  const status = STATUSES.find((s) => s === statusParam);
+  const status = PRODUCT_STATUSES.find((s) => s === statusParam);
 
   let productsQuery = supabase
     .from("products")
@@ -74,8 +69,8 @@ export default async function AdminProductsPage({
 
   const tabs: { label: string; href: string; active: boolean }[] = [
     { label: "ທັງໝົດ", href: "/admin/products", active: !status },
-    ...STATUSES.map((s) => ({
-      label: STATUS_LABEL[s],
+    ...PRODUCT_STATUSES.map((s) => ({
+      label: PRODUCT_STATUS_LABEL[s],
       href: `/admin/products?status=${s}`,
       active: status === s,
     })),
@@ -87,7 +82,15 @@ export default async function AdminProductsPage({
         ← ກັບແຜງຜູ້ດູແລ
       </Link>
 
-      <h1 className="mt-2 text-xl font-semibold">ສິນຄ້າ</h1>
+      <div className="mt-2 flex items-center justify-between gap-4">
+        <h1 className="text-xl font-semibold">ສິນຄ້າ</h1>
+        <Link
+          href="/admin/products/new"
+          className="rounded-lg border px-4 py-2 text-sm"
+        >
+          ເພີ່ມສິນຄ້າ
+        </Link>
+      </div>
 
       <nav className="mt-4 flex flex-wrap gap-2">
         {tabs.map((tab) => (
@@ -135,8 +138,15 @@ export default async function AdminProductsPage({
                 </div>
 
                 <span className="shrink-0 rounded-full border px-2 py-0.5 text-xs">
-                  {STATUS_LABEL[p.status]}
+                  {PRODUCT_STATUS_LABEL[p.status]}
                 </span>
+
+                <Link
+                  href={`/admin/products/${p.id}`}
+                  className="shrink-0 text-sm underline"
+                >
+                  ແກ້ໄຂ
+                </Link>
               </li>
             );
           })}
